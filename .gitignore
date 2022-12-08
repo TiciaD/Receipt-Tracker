@@ -3,3 +3,4 @@ node_modules
 build
 .env
 migrations
+db.sqlite3
