@@ -1,0 +1,6 @@
+.vscode
+build
+node_modules
+migrations
+.env
+db.sqlite3
