@@ -15,7 +15,7 @@ class Receipt(models.Model):
     image = models.ImageField(upload_to='images')
 
     def __str__(self):
-        return self.date.strftime("%H:%M:%S")
+        return self.date.strftime("%m/%d/%Y")
 
 class Tag(models.Model):
     receipts = models.ManyToManyField(Receipt, blank=True)
