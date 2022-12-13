@@ -1,6 +1,12 @@
 .vscode
-build
+
 node_modules
 migrations
+build
 .env
+
 db.sqlite3
+__pycache__
+venv
+
+server/images
