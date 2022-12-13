@@ -6,7 +6,7 @@ from .models import User, Receipt, Tag
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ('email',)
+        fields = ('id', 'email')
 
 class ReceiptSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
