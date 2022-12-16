@@ -22,3 +22,4 @@ class TagSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Tag
         fields = ('url', 'id', 'tag', 'receipts')
+
