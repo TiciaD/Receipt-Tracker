@@ -1,5 +1,5 @@
-from django.urls import path
-from django.conf.urls import include
+from django.urls import path, include
+# from django.conf.urls import include
 from rest_framework import routers
 from . import views
 
@@ -12,5 +12,5 @@ router.register(r'tags', views.TagViewSet, basename='tag')
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('', include(router.urls)),
-    path('api/', include('rest_framework.urls', namespace='rest_framework'))
+    # path('api/', include('rest_framework.urls', namespace='rest_framework'))
 ]

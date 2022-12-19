@@ -1,7 +1,6 @@
 from rest_framework import serializers
-from rest_framework.fields import CharField
 
-from .models import User, Receipt, Tag
+from .models import Receipt, Tag
 from django.contrib.auth.models import User
 
 from django.contrib.auth import password_validation
