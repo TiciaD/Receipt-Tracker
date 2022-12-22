@@ -3,7 +3,7 @@ from django.conf import settings
 
 class Receipt(models.Model):
     # 'auth.User', related_name='receipts'
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=255, blank=True, null=True)
     date = models.DateField()
     receiptImage = models.ImageField(upload_to='receipts')

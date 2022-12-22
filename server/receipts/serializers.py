@@ -8,38 +8,61 @@ from django.contrib.auth.hashers import make_password
 from rest_framework.validators import UniqueValidator
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    receipts = serializers.HyperlinkedRelatedField(
-        many=True, view_name='receipt-detail', read_only=True)
-    email = serializers.EmailField(required=True, validators=[
-                                   UniqueValidator(queryset=User.objects.all())])
-    password = serializers.CharField(
-        help_text=password_validation.password_validators_help_text_html(), write_only=True)
-
-    class Meta:
-        model = User
-        fields = ('url', 'id', 'username', 'email', 'password', 'receipts')
-
-    def validate_password(self, password):
-        user = self.context['request'].user
-        password_validation.validate_password(password=password, user=user)
-
-        return make_password(password)
-
-
-class ReceiptSerializer(serializers.HyperlinkedModelSerializer):
-    creatorUrl = serializers.ReadOnlyField(source='creator.url')
-    creator = serializers.ReadOnlyField(source='creator.username')
-    tags = serializers.HyperlinkedRelatedField(
-        many=True, view_name='tag-detail', queryset=Tag.objects.all())
-
-    class Meta:
-        model = Receipt
-        fields = ('url', 'id', 'title', 'date',
-                  'receiptImage', 'tags', 'creatorUrl', 'creator')
-
-
 class TagSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Tag
-        fields = ('url', 'id', 'tag', 'receipts')
+        fields = ('url', 'id', 'tagName')
+
+
+class ReceiptSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.HyperlinkedRelatedField(
+        view_name='user-detail', read_only=True)
+    tags = TagSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Receipt
+        fields = ['url', 'id' 'user', 'title', 'date', 'receiptImage', 'tags']
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    password = serializers.CharField()
+    receipts = ReceiptSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['url', 'id' 'email', 'username', 'password', 'receipts']
+        extra_kwargs = {
+            'email': {
+                'validators': [UniqueValidator(queryset=User.objects.all())],
+                'required': True,
+            },
+            'password': {
+                'write_only': True,
+            },
+        }
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = User.objects.create(**validated_data)
+        password_validation.validate_password(password, user)
+        user.set_password(password)
+        user.save()
+        return user
+
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get('email', instance.email)
+        instance.username = validated_data.get('username', instance.username)
+
+        password = validated_data.get('password')
+        if password:
+            password_validation.validate_password(password, instance)
+            instance.set_password(password)
+
+        instance.save()
+        return instance
+
+    # def validate_password(self, password):
+    #     user = self.context['request'].user
+    #     password_validation.validate_password(password=password, user=user)
+
+    #     return make_password(password)
