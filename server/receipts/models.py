@@ -1,26 +1,26 @@
 from django.db import models
-
-# Create your models here.
+from django.conf import settings
 
 class Receipt(models.Model):
-    creator = models.ForeignKey('auth.User', related_name='receipts', on_delete=models.CASCADE)
-    title = models.CharField(max_length=500, blank=True, null=True, default='')
+    # 'auth.User', related_name='receipts'
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255, blank=True, null=True)
     date = models.DateField()
-    receiptImage = models.ImageField(upload_to='images')
+    receiptImage = models.ImageField(upload_to='receipts')
+    tags = models.ManyToManyField('Tag')
 
     class meta:
-        ordering = ['title', 'date']
+        ordering = ['title', 'date', 'tags']
 
     def __str__(self):
         return f'{self.title or ""} {self.date.strftime("%m/%d/%Y")}'
 
 
 class Tag(models.Model):
-    receipts = models.ManyToManyField(Receipt, blank=True)
-    tag = models.CharField(max_length=200)
+    tagName = models.CharField(max_length=255)
 
     class meta:
-        ordering = ['tag']
+        ordering = ['tagName']
 
     def __str__(self):
-        return self.tag
+        return self.tagName
