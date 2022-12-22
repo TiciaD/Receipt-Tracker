@@ -9,9 +9,15 @@ from rest_framework.validators import UniqueValidator
 
 
 class TagSerializer(serializers.HyperlinkedModelSerializer):
+    receipts = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='receipt-detail'
+    )
+
     class Meta:
         model = Tag
-        fields = ('url', 'id', 'tagName')
+        fields = ('url', 'id', 'tagName', 'receipts')
 
 
 class ReceiptSerializer(serializers.HyperlinkedModelSerializer):
@@ -26,7 +32,11 @@ class ReceiptSerializer(serializers.HyperlinkedModelSerializer):
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     password = serializers.CharField()
-    receipts = ReceiptSerializer(many=True, read_only=True)
+    receipts = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='receipt-detail'
+    )
 
     class Meta:
         model = User

@@ -1,7 +1,7 @@
 from django.shortcuts import render
+from requests import Response
 
-# Create your views here.
-# views.py
+from rest_framework.decorators import action
 from rest_framework import viewsets, permissions
 from .permissions import IsOwnerOrReadOnly, IsUserOrReadOnly
 
@@ -20,8 +20,21 @@ class ReceiptViewSet(viewsets.ModelViewSet):
     serializer_class = ReceiptSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_superuser:
+            return Receipt.objects.all()
+        return Receipt.objects.filter(user=user)
+
     def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
+        serializer.save(user=self.request.user)
+
+    @action(detail=True, methods=['get'])
+    def receipts(self, request, pk=None):
+        receipts = Receipt.objects.filter(user_id=pk)
+        serializer = ReceiptSerializer(
+            receipts, many=True, context={'request': request})
+        return Response(serializer.data)
 
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
