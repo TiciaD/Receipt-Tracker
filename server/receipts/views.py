@@ -24,7 +24,8 @@ class ReceiptViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.is_superuser:
             return Receipt.objects.all()
-        return Receipt.objects.filter(user=user)
+        # return Receipt.objects.filter(user=user)
+        return Receipt.objects.all()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

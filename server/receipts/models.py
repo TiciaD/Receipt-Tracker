@@ -6,11 +6,11 @@ class Receipt(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=255, blank=True, null=True)
     date = models.DateField()
-    receiptImage = models.ImageField(upload_to='receipts')
+    receiptImage = models.ImageField(upload_to='images')
     tags = models.ManyToManyField('Tag')
 
     class meta:
-        ordering = ['title', 'date', 'tags']
+        ordering = ['id']
 
     def __str__(self):
         return f'{self.title or ""} {self.date.strftime("%m/%d/%Y")}'

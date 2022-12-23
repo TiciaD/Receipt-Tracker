@@ -9,12 +9,12 @@ from .models import Receipt, Tag
 #     list_filter = ('username', 'email',)
 
 class ReceiptAdmin(admin.ModelAdmin):
-    list_display = ('creator', 'date')
-    list_filter = ('date', 'creator')
+    list_display = ('user', 'date')
+    list_filter = ('date', 'user')
 
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('tag',)
-    list_filter = ('tag',)
+    list_display = ('tagName',)
+    list_filter = ('tagName',)
 
 
 # admin.site.register(User, UserAdmin)
