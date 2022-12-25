@@ -1,26 +1,30 @@
 from django.db import models
-from django.conf import settings
+from django.contrib.auth.models import User
 
 class Receipt(models.Model):
     # 'auth.User', related_name='receipts'
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=255, blank=True, null=True)
     date = models.DateField()
-    receiptImage = models.ImageField(upload_to='images')
+    receipt_image = models.ImageField(upload_to='images')
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     tags = models.ManyToManyField('Tag')
 
     class meta:
         ordering = ['id']
 
     def __str__(self):
-        return f'{self.title or ""} {self.date.strftime("%m/%d/%Y")}'
+        if self.title:
+            return f"{self.title} - {self.date}"
+        else:
+            return f"{self.date}"
 
 
 class Tag(models.Model):
-    tagName = models.CharField(max_length=255)
+    tag_name = models.CharField(max_length=255)
 
     class meta:
-        ordering = ['tagName']
+        ordering = ['tag_name']
 
     def __str__(self):
         return self.tagName

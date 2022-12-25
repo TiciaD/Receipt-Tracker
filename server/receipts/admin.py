@@ -13,8 +13,8 @@ class ReceiptAdmin(admin.ModelAdmin):
     list_filter = ('date', 'user')
 
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('tagName',)
-    list_filter = ('tagName',)
+    list_display = ('tag_name',)
+    list_filter = ('tag_name',)
 
 
 # admin.site.register(User, UserAdmin)
