@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Receipt(models.Model):
     # 'auth.User', related_name='receipts'
     title = models.CharField(max_length=255, blank=True, null=True)
@@ -27,4 +28,4 @@ class Tag(models.Model):
         ordering = ['tag_name']
 
     def __str__(self):
-        return self.tagName
+        return self.tag_name

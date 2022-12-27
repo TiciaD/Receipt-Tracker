@@ -1,29 +1,37 @@
 from django.shortcuts import render
-from requests import Response
+from rest_framework.response import Response
 
 # from rest_framework.decorators import action
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, generics
 from .permissions import IsOwner, IsUserOrReadOnly
 
-from .serializers import UserSerializer, ReceiptSerializer, TagSerializer
+from .serializers import UserSerializer, ReceiptSerializer, TagSerializer, UserSignupSerializer
 from .models import Receipt, Tag
 from django.contrib.auth.models import User
 
+class UserSignupView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSignupSerializer
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    # permission_classes = [permissions.IsAuthenticated]
 
-    def get_permissions(self):
-        if self.action in ['list', 'create']:
-            permission_classes = [permissions.AllowAny]
-        else:
-            permission_classes = [permissions.IsAuthenticated, IsOwner]
-        return [permission() for permission in permission_classes]
+    # def get_permissions(self):
+    #     if self.action in ['list', 'create']:
+    #         permission_classes = [permissions.AllowAny]
+    #     else:
+    #         permission_classes = [permissions.IsAuthenticated, IsOwner]
+    #     return [permission() for permission in permission_classes]
 
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
 
 class ReceiptViewSet(viewsets.ModelViewSet):
     queryset = Receipt.objects.all()
@@ -58,8 +66,8 @@ class TagViewSet(viewsets.ModelViewSet):
 
 
 class UserReceiptViewSet(viewsets.ViewSet):
-    def list(self, request, user_pk=None):
-        user = get_object_or_404(User, pk=user_pk)
+    def list(self, request, pk=None):
+        user = get_object_or_404(User, pk=pk)
         receipts = Receipt.objects.filter(user=user)
         serializer = ReceiptSerializer(receipts, many=True)
         return Response(serializer.data)
