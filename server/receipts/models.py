@@ -3,10 +3,23 @@ from django.contrib.auth.models import User
 
 
 class Receipt(models.Model):
-    # 'auth.User', related_name='receipts'
-    title = models.CharField(max_length=255, blank=True, null=True)
+    store_name = models.CharField(
+        max_length=255, 
+        blank=True, 
+        null=True
+    )
     date = models.DateField()
-    receipt_image = models.ImageField(upload_to='images')
+    cost = models.DecimalField(
+        max_digits=20,
+        decimal_places=2, 
+        blank=True, 
+        null=True
+    )
+    receipt_image = models.ImageField(
+        upload_to='images', 
+        blank=True, 
+        null=True
+    )
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     tags = models.ManyToManyField('Tag')
@@ -15,8 +28,8 @@ class Receipt(models.Model):
         ordering = ['id']
 
     def __str__(self):
-        if self.title:
-            return f"{self.title} - {self.date}"
+        if self.store_name:
+            return f"{self.store_name} - {self.date}"
         else:
             return f"{self.date}"
 

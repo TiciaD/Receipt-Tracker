@@ -9,91 +9,73 @@ from rest_framework.validators import UniqueValidator
 
 
 class TagSerializer(serializers.ModelSerializer):
-    # receipts = serializers.PrimaryKeyRelatedField(
-    #     many=True,
-    #     queryset=Receipt.objects.all()
-    # )
-    # receipts = serializers.PrimaryKeyRelatedField(
-    #     many=True,
-    #     queryset=Receipt.objects.all()
-    #     # read_only=True,
-    #     # view_name='receipt-detail'
-    # )
+    receipts = serializers.SerializerMethodField()
 
     class Meta:
         model = Tag
-        fields = ('id', 'tag_name')
+        fields = ('id', 'tag_name', 'receipts')
+
+    def get_receipts(self, obj):
+        return [receipt.pk for receipt in obj.receipt_set.all()]
+
+
+class ManyToManyListField(serializers.ListField):
+    def to_representation(self, value):
+        # Convert the ManyToMany field to a list of tag names
+        return [tag.tag_name for tag in value.all()]
+
+    def to_internal_value(self, data):
+        # Convert the list of tag names to a ManyToMany field
+        tags = []
+        for tag_name in data:
+            tag, created = Tag.objects.get_or_create(tag_name=tag_name)
+            tags.append(tag)
+        return tags
 
 
 class ReceiptSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(
-        read_only=True
-        # view_name='user-detail', read_only=True
-    )
-    tags = serializers.SlugRelatedField(
-        queryset=Tag.objects.all(),
-        slug_field='tag_name',
-        many=True
-    )
+    receipt_image = serializers.ImageField(required=False)
+    user = serializers.StringRelatedField(read_only=True)
+    tags = ManyToManyListField(required=False)
 
     class Meta:
         model = Receipt
-        fields = ['id', 'user', 'title', 'date', 'receipt_image', 'tags']
+        fields = ['id', 'user', 'store_name', 'date', 'receipt_image', 'tags']
 
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
-        write_only=True, help_text=password_validation.password_validators_help_text_html())
-    email = serializers.EmailField(required=True, validators=[
-                                   UniqueValidator(queryset=User.objects.all())])
-    # receipts = serializers.PrimaryKeyRelatedField(
-    #     many=True,
-    #     queryset=Receipt.objects.all(),
-    #     required=False
-    # )
+        write_only=True,
+        help_text=password_validation.password_validators_help_text_html()
+    )
+    email = serializers.EmailField(
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all())]
+    )
     receipts = ReceiptSerializer(
         many=True,
-        read_only=True,
+        read_only=True
     )
 
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'password', 'receipts']
 
-    # def create(self, validated_data):
-    #     password = validated_data.pop('password')
-    #     user = User.objects.create(**validated_data)
-    #     self.validate_password(password)
-    #     user.set_password(password)
-    #     user.save()
-    #     return user
-
-    # def update(self, instance, validated_data):
-    #     instance.email = validated_data.get('email', instance.email)
-    #     instance.username = validated_data.get('username', instance.username)
-
-    #     password = validated_data.get('password')
-    #     if password:
-    #         self.validate_password(password)
-    #         instance.set_password(password)
-
-    #     instance.save()
-    #     return instance
-
     def validate_password(self, password):
-        # user = self.context['request'].user
-        # password_validation.validate_password(password=password, user=user)
         password_validation.validate_password(password)
 
-        # return password
         return make_password(password)
 
 
 class UserSignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
-        write_only=True, help_text=password_validation.password_validators_help_text_html())
-    email = serializers.EmailField(required=True, validators=[
-                                   UniqueValidator(queryset=User.objects.all())])
+        write_only=True,
+        help_text=password_validation.password_validators_help_text_html()
+    )
+    email = serializers.EmailField(
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all())]
+    )
 
     class Meta:
         model = User
@@ -103,3 +85,16 @@ class UserSignupSerializer(serializers.ModelSerializer):
         password_validation.validate_password(password)
 
         return make_password(password)
+
+
+# class ReceiptSerializer(serializers.ModelSerializer):
+#     user = serializers.StringRelatedField(read_only=True)
+#     tags = serializers.SerializerMethodField()
+
+#     class Meta:
+#         model = Receipt
+#         fields = ['id', 'user', 'store_name', 'date', 'receipt_image', 'tags']
+
+#     def get_tags(self, obj):
+#         tags = obj.tags.all()
+#         return [tag.tag_name for tag in tags]

@@ -18,5 +18,4 @@ urlpatterns = [
     path('auth/signup/', views.UserSignupView.as_view()),
     path('auth/login/', auth_views.LoginView.as_view()),
     path('auth/logout/', auth_views.LogoutView.as_view()),
-    # path('api/', include('rest_framework.urls', namespace='rest_framework'))
 ]
