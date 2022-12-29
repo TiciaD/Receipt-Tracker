@@ -34,13 +34,37 @@ class ManyToManyListField(serializers.ListField):
 
 
 class ReceiptSerializer(serializers.ModelSerializer):
+    store_name = serializers.CharField(required=False)
+    tax = serializers.DecimalField(
+        max_digits=2,
+        decimal_places=2,
+        min_value=0,
+        max_value=1,
+        required=False
+    )
+    cost = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        min_value=0,
+        max_value=999999999,
+        required=False
+    )
     receipt_image = serializers.ImageField(required=False)
     user = serializers.StringRelatedField(read_only=True)
     tags = ManyToManyListField(required=False)
 
     class Meta:
         model = Receipt
-        fields = ['id', 'user', 'store_name', 'date', 'receipt_image', 'tags']
+        fields = [
+            'id', 
+            'user', 
+            'store_name', 
+            'date', 
+            'tax',  
+            'cost', 
+            'receipt_image', 
+            'tags'
+        ]
 
 
 class UserSerializer(serializers.ModelSerializer):

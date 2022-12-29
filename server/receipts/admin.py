@@ -23,14 +23,18 @@ class TagListFilter(ListFilter):
             # Filter the receipts by the selected tag id
             return queryset.filter(tags__id=self.value())
 
+    def value(self):
+        return self.used_parameters.get(self.parameter_name)
 
-def tags_display(self, obj):
-    return ', '.join([tag.tag_name for tag in obj.tags.all()])
-
+    def has_output(self):
+        return bool(self.used_parameters.get(self.parameter_name))
 
 class ReceiptAdmin(admin.ModelAdmin):
-    list_display = ('user', 'store_name', 'date', 'cost', tags_display)
+    list_display = ('user', 'store_name', 'date', 'tax', 'cost', 'tags_display')
     list_filter = ('user', 'store_name', 'date', 'cost', TagListFilter)
+
+    def tags_display(self, obj):
+        return ', '.join([tag.tag_name for tag in obj.tags.all()])
 
 
 class TagAdmin(admin.ModelAdmin):

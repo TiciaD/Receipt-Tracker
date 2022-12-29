@@ -9,8 +9,14 @@ class Receipt(models.Model):
         null=True
     )
     date = models.DateField()
+    tax = models.DecimalField(
+        max_digits=2,
+        decimal_places=2,
+        blank=True,
+        null=True
+    )
     cost = models.DecimalField(
-        max_digits=20,
+        max_digits=10,
         decimal_places=2, 
         blank=True, 
         null=True
