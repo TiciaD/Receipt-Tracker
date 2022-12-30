@@ -1,25 +1,50 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-# Create your models here.
-
-class User(models.Model):
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=256)
-
-    def __str__(self):
-        return self.email
 
 class Receipt(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    store_name = models.CharField(
+        max_length=255, 
+        blank=True, 
+        null=True
+    )
     date = models.DateField()
-    image = models.ImageField(upload_to='images')
+    tax = models.DecimalField(
+        max_digits=2,
+        decimal_places=2,
+        blank=True,
+        null=True
+    )
+    cost = models.DecimalField(
+        max_digits=10,
+        decimal_places=2, 
+        blank=True, 
+        null=True
+    )
+    receipt_image = models.ImageField(
+        upload_to='images', 
+        blank=True, 
+        null=True
+    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    tags = models.ManyToManyField('Tag')
+
+    class meta:
+        ordering = ['id']
 
     def __str__(self):
-        return self.date.strftime("%m/%d/%Y")
+        if self.store_name:
+            return f"{self.store_name} - {self.date}"
+        else:
+            return f"{self.date}"
+
 
 class Tag(models.Model):
-    receipts = models.ManyToManyField(Receipt, blank=True)
-    tag = models.CharField(max_length=200)
+    tag_name = models.CharField(max_length=255)
+
+    class meta:
+        ordering = ['tag_name']
 
     def __str__(self):
-        return self.tag
+        return self.tag_name

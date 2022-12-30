@@ -17,8 +17,14 @@ from django.contrib import admin
 from django.urls import path
 from receipts import views
 from django.conf.urls import include
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', RedirectView.as_view(url='/api')),
     path('api/', include('receipts.urls')),
+]
+
+urlpatterns += [
+    path('api/direct-auth/', include('rest_framework.urls')),
 ]
