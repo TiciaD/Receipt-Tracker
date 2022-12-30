@@ -1,0 +1,8 @@
+Django==4.1.4
+djangorestframework==3.14.0
+python-dotenv==0.21.0
+django-cors-headers==3.13.0
+Pillow==9.3.0
+markdown==3.4.1
+django-filter==22.1
+django-advanced_password_validation==1.1.1
