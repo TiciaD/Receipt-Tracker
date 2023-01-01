@@ -187,3 +187,6 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
 ]
 
 CSRF_TRUSTED_ORIGINS = ['https://*.gitpod.io']
+
+MEDIA_URL = '/uploads/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
