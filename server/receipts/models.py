@@ -10,7 +10,7 @@ class Receipt(models.Model):
         null=True
     )
     date = models.DateField()
-    expense = models.CharField(max_length=80, choice=EXPENSE_OPTIONS)
+    expense = models.CharField(max_length=80, choices=EXPENSE_OPTIONS)
     tax = models.DecimalField(
         max_digits=2,
         decimal_places=2,

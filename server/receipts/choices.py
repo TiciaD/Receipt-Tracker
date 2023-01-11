@@ -1,6 +1,5 @@
 EXPENSE_OPTIONS = (
-    ('dining_out', 'Dining Out'),
-    ('groceries', 'Groceries'),
+    ('food', 'Food'),
     ('housing', 'Housing'),
     ('transportation', 'Transportation'),
     ('entertainment', 'Entertainment'),

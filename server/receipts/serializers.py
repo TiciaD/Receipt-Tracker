@@ -67,6 +67,7 @@ class ReceiptSerializer(serializers.ModelSerializer):
             'tax',  
             'cost', 
             'receipt_image', 
+            'notes',
             'tags'
         ]
 
