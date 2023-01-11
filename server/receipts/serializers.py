@@ -113,16 +113,3 @@ class UserSignupSerializer(serializers.ModelSerializer):
         password_validation.validate_password(password)
 
         return make_password(password)
-
-
-# class ReceiptSerializer(serializers.ModelSerializer):
-#     user = serializers.StringRelatedField(read_only=True)
-#     tags = serializers.SerializerMethodField()
-
-#     class Meta:
-#         model = Receipt
-#         fields = ['id', 'user', 'store_name', 'date', 'receipt_image', 'tags']
-
-#     def get_tags(self, obj):
-#         tags = obj.tags.all()
-#         return [tag.tag_name for tag in tags]
