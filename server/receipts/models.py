@@ -10,7 +10,7 @@ class Receipt(models.Model):
         null=True
     )
     date = models.DateField()
-    expense = models.CharField(max_length=40, choice=EXPENSE_OPTIONS)
+    expense = models.CharField(max_length=80, choice=EXPENSE_OPTIONS)
     tax = models.DecimalField(
         max_digits=2,
         decimal_places=2,
@@ -27,6 +27,10 @@ class Receipt(models.Model):
         upload_to='images', 
         blank=True, 
         null=True
+    )
+    notes = models.TextField(
+        null=True,
+        blank=True,
     )
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
