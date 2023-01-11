@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from .choices import EXPENSE_OPTIONS
 
 
 class Receipt(models.Model):
@@ -9,6 +10,7 @@ class Receipt(models.Model):
         null=True
     )
     date = models.DateField()
+    expense = models.CharField(max_length=40, choice=EXPENSE_OPTIONS)
     tax = models.DecimalField(
         max_digits=2,
         decimal_places=2,

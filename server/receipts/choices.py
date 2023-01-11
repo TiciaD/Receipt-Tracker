@@ -1,0 +1,18 @@
+EXPENSE_OPTIONS = (
+    ('food', 'Food'),
+    ('housing', 'Housing'),
+    ('transportation', 'Transportation'),
+    ('entertainment', 'Entertainment'),
+    ('education', 'Education'),
+    ('healthcare', 'Healthcare'),
+    ('utilities', 'Utilities'),
+    ('clothing', 'Clothing'),
+    ('personal_care', 'Personal Care'),
+    ('gifts', 'Gifts'),
+    ('travel', 'Travel'),
+    ('debt_repayment', 'Debt Repayment'),
+    ('savings', 'Savings'),
+    ('investments', 'Investments'),
+    ('taxes', 'Taxes'),
+    ('other', 'Other'),
+)

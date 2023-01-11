@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from .models import Receipt, Tag
 from django.contrib.auth.models import User
+from .choices import EXPENSE_OPTIONS
 
 from django.contrib.auth import password_validation
 from django.contrib.auth.hashers import make_password
@@ -35,6 +36,7 @@ class ManyToManyListField(serializers.ListField):
 
 class ReceiptSerializer(serializers.ModelSerializer):
     store_name = serializers.CharField(required=False)
+    expense = serializers.ChoiceField(choices=EXPENSE_OPTIONS)
     tax = serializers.DecimalField(
         max_digits=2,
         decimal_places=2,
@@ -59,7 +61,8 @@ class ReceiptSerializer(serializers.ModelSerializer):
             'id', 
             'user', 
             'store_name', 
-            'date', 
+            'date',
+            'expense', 
             'tax',  
             'cost', 
             'receipt_image', 
